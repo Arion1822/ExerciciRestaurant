@@ -34,7 +34,7 @@ static Scanner sc=  new Scanner(System.in);
 			if(capacity==-1) {
 				System.out.println("Numero massa gran");
 				people= askPeople();
-			}
+			}  
 			else {
 				System.out.println("Queda un espai de "+capacity+" persones");
 			}
