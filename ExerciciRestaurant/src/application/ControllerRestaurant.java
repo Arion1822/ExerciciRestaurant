@@ -12,14 +12,16 @@ public class ControllerRestaurant {
 		Restaurant restaurant= new Restaurant(name);
 		new RestaurantRepository().addRestaurant(restaurant);
 		
-		return name;
+		return restaurant.getId();
 	}
 	
 	
-	public int addPeople(String name, int number) {
+	public int addPeople(String id, int number){
 		
-		Restaurant restaurant= new RestaurantRepository().findRestaurantByName(name);
-		
+		Restaurant restaurant= new RestaurantRepository().findRestaurantById(id);
+		if(restaurant.actualCapacity+number> 24) {
+			return -1;
+		}
 		return restaurant.addPeople(number);
 		
 		

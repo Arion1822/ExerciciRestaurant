@@ -10,8 +10,8 @@ static Scanner sc=  new Scanner(System.in);
 	
 	public static void main (String[] args) {
 		try {
-			String name= createRestaurant();
-			addPeople(name);
+			String id= createRestaurant();
+			addPeople(id);
 			
 			
 		}catch(Exception e) {
@@ -31,7 +31,14 @@ static Scanner sc=  new Scanner(System.in);
 		while(capacity>0) {
 			int people= askPeople();
 			capacity= new ControllerRestaurant().addPeople(id, people);
-			System.out.println("Queda un espai de "+capacity+" persones");
+			if(capacity==-1) {
+				System.out.println("Numero massa gran");
+				people= askPeople();
+			}
+			else {
+				System.out.println("Queda un espai de "+capacity+" persones");
+			}
+			
 		}
 		
 	}
