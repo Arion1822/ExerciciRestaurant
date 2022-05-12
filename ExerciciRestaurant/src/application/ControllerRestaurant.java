@@ -15,6 +15,14 @@ public class ControllerRestaurant {
 		return restaurant.getId();
 	}
 	
+	public String addTable(String id, int number) {
+		Restaurant restaurant= new RestaurantRepository().findRestaurantById(id);
+		
+		String tableId=restaurant.createTable(number);
+		return "Taula "+ tableId+" : "+ number+ " persones"; 
+	
+		
+	}
 	
 	public int addPeople(String id, int number){
 		
@@ -26,6 +34,7 @@ public class ControllerRestaurant {
 		
 		
 	}
+	
 	
 	
 }

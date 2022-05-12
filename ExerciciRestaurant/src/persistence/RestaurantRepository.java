@@ -16,7 +16,7 @@ public class RestaurantRepository {
 		
 		restaurants.add(restaurant);
 	}
-	
+
 	public Restaurant findRestaurantById(String id) {
 		
 		return restaurants.stream().filter(x -> x.getId().equals(id)).findAny().get();

@@ -27,15 +27,22 @@ static Scanner sc=  new Scanner(System.in);
 	}
 	private static void addPeople(String id) throws Exception{
 		int capacity= Restaurant.MAXCAPACITY;
+		String[] tables= new String[24];
+		int cont=1;
 		
 		while(capacity>0) {
 			int people= askPeople();
 			capacity= new ControllerRestaurant().addPeople(id, people);
 			if(capacity==-1) {
 				System.out.println("Numero massa gran");
-				people= askPeople();
+				capacity=24;
 			}  
 			else {
+				tables[cont-1]= new ControllerRestaurant().addTable(id, people);
+				for(int i=0; i<cont; i++) {
+					System.out.println(tables[i]);
+				}
+				cont++;
 				System.out.println("Queda un espai de "+capacity+" persones");
 			}
 			
