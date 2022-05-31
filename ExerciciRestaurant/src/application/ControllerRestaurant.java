@@ -1,50 +1,57 @@
 package application;
 
-import java.util.List;
-
+import application.dto.RestaurantDTO;
 import domain.Restaurant;
 import domain.Table;
 import persistence.RestaurantRepository;
-import utilities.RestaurantUtilities;
+
 
 public class ControllerRestaurant {
 
 	
-	public String createRestaurant(String name) {
+	public Restaurant createRestaurant(RestaurantDTO restdto) {
 		
-		Restaurant restaurant= new Restaurant(name);
+		Restaurant restaurant= new Restaurant(restdto);
+		
 		new RestaurantRepository().addRestaurant(restaurant);
 		
-		return restaurant.getId();
+		return restaurant;
 	}
 	
-	public String addTable(String id, int number) {
+	public String addTable(String id, int number) throws Exception {
+		String tableId= null;
 		Restaurant restaurant= new RestaurantRepository().findRestaurantById(id);
+		while(number>Table.MAXPEOPLEPERTABLE) {
+			tableId=restaurant.createTable(Table.MAXPEOPLEPERTABLE);
+			number= number-Table.MAXPEOPLEPERTABLE;
+		}
 		
-		String tableId=restaurant.createTable(number);
+		tableId=restaurant.createTable(number);
+		
+		
 		return "Taula "+ tableId+" : "+ number+ " persones"; 
 	
 		
 	}
-	public void RemoveTable(String id, int number) {
+	public void removeTable(String id, int number) {
 		Restaurant restaurant= new RestaurantRepository().findRestaurantById(id);
 		restaurant.removeTable(number);
 		
 	}
 	
-	public int addPeople(String id, int number){
+	public int addPeople(String id, int number) throws Exception{
 		
 		Restaurant restaurant= new RestaurantRepository().findRestaurantById(id);
-		if(restaurant.actualCapacity+number> 24) {
+		if(number> 24) {
 			return -1;
 		}
 		return restaurant.addPeople(number);
 		
 		
 	}
-	public List<Table> updateList(String id) {
+	public String updateList(String id) {
 		Restaurant restaurant= new RestaurantRepository().findRestaurantById(id);
-		return restaurant.updateList();
+		return  restaurant.updateList();
 	}
 	
 	

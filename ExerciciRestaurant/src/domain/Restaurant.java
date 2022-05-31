@@ -1,52 +1,74 @@
 package domain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import application.dto.RestaurantDTO;
+import application.dto.TableDTO;
 
 public class Restaurant {
 
-	private static int count=0;
 	public String id;
 	public String nameRestaurant;
-	public int actualCapacity;
+	public int numberOfClients;
+
+
 	public static final int MAXCAPACITY= 24;
+	public static final int MAXTABLES = 4;
+
+	
 	
 	public List<Table> tables= new ArrayList<>();
 	
 	
 	
-	public Restaurant(String name) {
+	public Restaurant(RestaurantDTO restaurant) {
 		
-		this.actualCapacity=0;
-		this.nameRestaurant= name;
-		this.id= ""+count++;
+
+		this.nameRestaurant= restaurant.getNameRestaurant();
+		this.id= UUID.randomUUID().toString();
 	}
 	
-	public int addPeople(int number) {
-		actualCapacity+=number;
-		return MAXCAPACITY- actualCapacity;
+	public int addPeople(int number) throws Exception {
+
+		while (number>Table.MAXPEOPLEPERTABLE) {
+			number = number- Table.MAXPEOPLEPERTABLE;
+		}
+		return MAXCAPACITY - (tables.size()+1)*Table.MAXPEOPLEPERTABLE;
 	
 	}
-	public String  createTable(int number) {
-		Table table= new Table(number);
-		tables.add(table);
-		return table.getId();
+	public String  createTable(int number) throws Exception {
+		if(tables.size()>=MAXTABLES) 			
+			throw new Exception("Mesas llenas");
+		
+		else {
+			Table table= new Table(new TableDTO(number));
+			tables.add(table);
+			
+			return table.getId();
+		}
 	}
 	public void removeTable(int number) {
-		System.out.println("UWU");
-		tables.remove(number);
+		tables.remove(number-1);
+
 	}
 	public String getName() {
 		
 		return this.nameRestaurant;
 	}
-	public int getActualCapacity() {
-		return this.actualCapacity;
-				
-	}
-	public List<Table> updateList() {
-		return this.tables;
+
+	public String updateList() {
+		String aux = "";
+		
+		for (int i =0; i<tables.size();i++) {
+			aux+= "Taula "+ tables.get(i).getId()+ " : "+tables.get(i).getPeople()+" persones \n";
+		}
+		return aux;
 	}
 	public String getId() {
 		return this.id;
+	}
+	public int getNumberOfClients() {
+		return numberOfClients;
 	}
 }

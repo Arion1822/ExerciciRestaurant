@@ -2,18 +2,20 @@ package view;
 import java.util.Scanner;
 
 import application.ControllerRestaurant;
+import application.dto.RestaurantDTO;
 import domain.Restaurant;
+import domain.Table;
 
 public class Main {
 
 static Scanner sc=  new Scanner(System.in);
-private static String[] tables= new String[24];
-private static int cont=1;
+private static String tables;
+
 	
 	public static void main (String[] args) {
 		try {
-			String id= createRestaurant();
-			selection(id);
+			Restaurant restaurant= createRestaurant();
+			selection(restaurant.getId());
 						
 			
 		}catch(Exception e) {
@@ -46,9 +48,9 @@ private static int cont=1;
 	}
 
 
-	private static String createRestaurant()  throws Exception {
+	private static Restaurant createRestaurant()  throws Exception {
 		String name= askName();
-		return new ControllerRestaurant().createRestaurant(name);
+		return new ControllerRestaurant().createRestaurant(new RestaurantDTO(name));
 		
 	}
 	private static void addPeople(String id) throws Exception{
@@ -56,17 +58,22 @@ private static int cont=1;
 		
 		while(capacity>0) {
 			int people= askPeople();
-			capacity= new ControllerRestaurant().addPeople(id, people);
+			if(people>6) {
+				capacity= new ControllerRestaurant().addPeople(id, people)-Table.MAXPEOPLEPERTABLE;
+			}
+			else {
+				capacity= new ControllerRestaurant().addPeople(id, people);
+			}
+			
 			if(capacity==-1) {
 				System.out.println("Numero massa gran");
 				capacity=24;
 			}  
 			else {
-				tables[cont-1]= new ControllerRestaurant().addTable(id, people);
-				for(int i=0; i<cont; i++) {
-					System.out.println(tables[i]);
-				}
-				cont++;
+				tables= new ControllerRestaurant().addTable(id, people);
+				
+					System.out.println(tables);
+				
 				System.out.println("Queda un espai de "+capacity+" persones");
 				selection(id);
 			}
@@ -77,19 +84,18 @@ private static int cont=1;
 	
 	private static void removeTables(String id) throws Exception{
 		int table= askTable();
-		new ControllerRestaurant().RemoveTable(id, table);
+		new ControllerRestaurant().removeTable(id, table);
 		tables=new ControllerRestaurant().updateList(id);
-		
 		viewTables(id);
 			
 		
 	}
 	
 	private static void viewTables(String id) throws Exception {
-	
-		for(int i=1; i<cont; i++) {
-		System.out.println(tables[i-1]);
-		}
+		
+		tables = new ControllerRestaurant().updateList(id);
+		System.out.println(tables);
+		
 		selection(id);
 	}
 	
